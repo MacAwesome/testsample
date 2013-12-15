@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="ja">
+<html>
+  <head>
+    <meta charaset="utf-8">
+    <title>Bootstrapの練習</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="sample.css">
+    <style type="text/css">
+ul {
+    margin: 0 10px;
+}
+li {
+    float: left;
+    margin: 5px;
+}
+li img {
+    box-shadow: 1px 1px 5px #333;
+}
+#largeImg {
+    display: none;
+    border: 1px solid #fff;
+}
+#cover {
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+</style>
+  </head>
+  <body>
+
+<nav class="navbar navbar-inverse" role="navigation">
+  <!-- Brand and toggle get grouped for better mobile display -->
+  <div class="navbar-header">
+    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+      <span class="sr-only">Toggle navigation</span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </button>
+    <a class="navbar-brand" href="#">Brand</a>
+  </div>
+
+  <!-- Collect the nav links, forms, and other content for toggling -->
+  <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+    <ul class="nav navbar-nav">
+      <li class="active"><a href="#">Link</a></li>
+      <li><a href="#">Link</a></li>
+      <li class="dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+        <ul class="dropdown-menu">
+          <li><a href="#">Action</a></li>
+          <li><a href="#">Another action</a></li>
+          <li><a href="#">Something else here</a></li>
+          <li class="divider"></li>
+          <li><a href="#">Separated link</a></li>
+          <li class="divider"></li>
+          <li><a href="#">One more separated link</a></li>
+        </ul>
+      </li>
+    </ul>
+    <form class="navbar-form navbar-left" role="search">
+      <div class="form-group">
+        <input type="text" class="form-control" placeholder="Search">
+      </div>
+      <button type="submit" class="btn btn-default">Submit</button>
+    </form>
+    <ul class="nav navbar-nav navbar-right">
+      <li><a href="#">Link</a></li>
+      <li class="dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+        <ul class="dropdown-menu">
+          <li><a href="#">Action</a></li>
+          <li><a href="#">Another action</a></li>
+          <li><a href="#">Something else here</a></li>
+          <li class="divider"></li>
+          <li><a href="#">Separated link</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div><!-- /.navbar-collapse -->
+</nav>
+
+
+
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+
+
+
+ <!--地図を配置-->
+<div id="map"></div>
+<button id="allcourse">全コースを表示</button>
+
+
+ <!--ボタンを配置-->
+<div id="manybuttons">
+<div class="section">
+<p class="toolTitle"><button id="route1">新公会堂　→　氷室神社　→　東大寺ミュージアム</button></p>
+<div id="coursea"class="toolContent">
+
+
+<ul class="gallery">
+<a href="kokaido.jpg"><img src="kokaido.jpg" width="128" height="96" /></a>
+<a href="himuro.jpg"><img src="himuro.jpg" width="128" height="96" /></a>
+<a href="museum.jpg"><img src="museum.jpg" width="128" height="96" /></a>
+</ul>
+<div id="cover"></div>
+<div id="largeImg"><img width="400" src="kokaido.jpg"></div>
+
+<script type="text/javascript">
+$('.gallery a').bind('click', function(e) {
+    e.preventDefault();
+    $('#cover').css({
+        'width': $(window).width(),
+        'height': $(window).height()
+    })
+    .show();
+
+    $('#largeImg').css({
+        'position': 'absolute',
+        'left': Math.floor(($(window).width() - 400) / 2) + 'px',
+        'top': $(window).scrollTop() + 30 + 'px'
+    })
+    .find('img').attr('src', $(this).attr('href')).end()
+    .fadeIn('slow');
+});
+
+$('#cover, #largeImg').bind('click', function() {
+    $('#largeImg').fadeOut('slow', function() {
+        $('#cover').hide();
+    });
+});
+</script>
+
+</div>
+</div>
+
+
+<div class="section">
+<p class="toolTitle"><button id="route2">氷室神社　→　東大寺ミュージアム　→　東大寺</button></p>
+<div id="courseb"class="toolContent">
+<a>氷室神社　→　東大寺ミュージアム　→　東大寺</a>
+</div>
+</div>
+
+<div class="section">
+<p class="toolTitle"><button id="route3">東大寺　→　2月堂　→　奈良公園</button></p>
+<div id="coursec"class="toolContent">
+<a>東大寺ミュージアム　→　奈良公園　→　東大寺</a>
+</div>
+</div>
+</div>
+
+
+<script type="text/javascript">
+// forked from ksk1015's "Google Map APIの練習 道や線路を消し、縮小拡大を制限する" http://jsdo.it/ksk1015/bj39
+// forked from ksk1015's "Google Map APIの練習 色を変更する2 - 地獄篇" http://jsdo.it/ksk1015/5wrl
+// forked from ksk1015's "Google Map APIの練習 色を変更する" http://jsdo.it/ksk1015/lOxL
+// forked from ksk1015's "Google Map APIの練習 マーカーとウィンドウ付ける" http://jsdo.it/ksk1015/i9yq
+// forked from ksk1015's "Google Map APIの練習 " http://jsdo.it/ksk1015/26bu
+
+// 二つ目の地図
+
+
+
+
+
+(function(){
+    $('#coursea').hide();
+
+    $('#route1').bind('mouseover', function() {
+    routePath[0].setMap(map);
+    routePath[1].setMap(null);
+    routePath[2].setMap(null);
+        });     
+    $('#route1').bind('click', function(){
+    $('#coursea').slideToggle();
+    map.fitBounds(bounds1);
+/*
+var latlng = map.getCenter();
+var lat = latlng.lat();
+var lng = latlng.lng();
+*/
+/*
+setInterval(function(){
+
+    var lapse = map.getCenter();
+   // var bound = new google.maps.LatLngBounds(new google.maps.LatLng(60, 2), new google.maps.LatLng(1, 1));
+    map.fitBounds(bound1);
+ },50);
+
+  */  
+});
+
+
+    $('#courseb').hide();
+    $('#route2').bind('mouseover', function() {
+    routePath[0].setMap(null);
+    routePath[1].setMap(map);
+    routePath[2].setMap(null);
+        });  
+    $('#route2').bind('click', function(){
+    $('#courseb').slideToggle();
+    map.fitBounds(bounds2);
+});
+
+    $('#coursec').hide();
+    $('#route3').bind('mouseover', function() {
+    routePath[0].setMap(null);
+    routePath[1].setMap(null);
+    routePath[2].setMap(map);
+        });  
+    $('#route3').bind('click', function(){
+    $('#coursec').slideToggle();
+    map.fitBounds(bounds3);
+
+});
+
+
+    $('#allcourse').bind('click',function(){
+        $('#coursea').slideDown();
+        $('#courseb').slideDown();
+        $('#coursec').slideDown();
+        routePath[0].setMap(map);
+        routePath[1].setMap(map);
+        routePath[2].setMap(map);
+        map.fitBounds(bounds4);
+    })
+
+
+    // 地図
+    var mapElem = document.getElementById("map");
+    var latlng = new google.maps.LatLng(34.687499,135.841322);
+    var mapOptions = {
+        center: latlng,
+        mapTypeId: google.maps.MapTypeId.ROADMAP,
+        zoom: 16,
+        mapTypeControl: false,
+        streetViewControl: false,
+        panControl: false
+    };
+     var map = new google.maps.Map(mapElem, mapOptions);
+  
+
+    
+    var markerOpts = new Array(5);
+    var marker = new Array(5);
+
+
+       markerOpts[0] = {
+
+        position: new google.maps.LatLng(34.683855,135.843317),
+        map: map,
+        title: "公会堂"
+      };
+       markerOpts[1] = {
+
+        position: new google.maps.LatLng(34.684389,135.837852),
+        map: map,
+        title: "奈良氷室神社"
+      };
+       markerOpts[2] = {       
+        position: new google.maps.LatLng(34.68618,135.839316),
+        map: map,
+        title: "東大寺ミュージアム"
+
+      };
+       markerOpts[3] = {
+        position: new google.maps.LatLng(34.689016,135.839873),
+        map: map,
+        title: "東大寺"
+      };
+        markerOpts[4] = {
+        position: new google.maps.LatLng(34.689281,135.844267),
+        map: map,
+        title: "2月堂"
+      };
+        markerOpts[5] = {
+        position: new google.maps.LatLng(34.685425,135.843532),
+        map: map,
+        title: "奈良公園"
+      };
+
+
+       marker[0] = new google.maps.Marker(markerOpts[0]);
+      var contentStr0 = '<p><a href="index.html"><img src="kokaido.jpg" width="128" height="96" /></a></p>';
+    　　var infowin0 = new google.maps.InfoWindow({content:"雅楽を見学。" + contentStr0});
+      google.maps.event.addListener(marker[0], 'mouseover', function(){
+          infowin0.open(map, marker[0]);
+        });
+      google.maps.event.addListener(marker[0], 'mouseout', function(){
+          infowin0.close();
+        });
+
+         
+ 
+
+       marker[1] = new google.maps.Marker(markerOpts[1]);
+      var contentStr1 = '<p><a href="index.html"><img src="himuro.jpg" width="96" height="128" /></a></p>';
+    　　var infowin1 = new google.maps.InfoWindow({content:"しだれ桜がきれい！" + contentStr1});
+      google.maps.event.addListener(marker[1], 'mouseover', function(){
+          infowin1.open(map, marker[1]);
+        });
+      google.maps.event.addListener(marker[1], 'mouseout', function(){
+          infowin1.close();
+        });
+
+
+
+       marker[2] = new google.maps.Marker(markerOpts[2]);
+      var contentStr2 = '<p><a href="index.html"><img src="museum.jpg" width="128" height="96" /></a></p>';
+    　　var infowin2 = new google.maps.InfoWindow({content:"国宝がいっぱい！！" + contentStr2});
+      google.maps.event.addListener(marker[2], 'mouseover', function(){
+          infowin2.open(map, marker[2]);
+        });
+      google.maps.event.addListener(marker[2], 'mouseout', function(){
+          infowin2.close();
+        });
+
+       marker[3]= new google.maps.Marker(markerOpts[3]);
+      var contentStr3 = '<p><a href="index.html"><img src="todaiji.jpg" width="128" height="96" /></a></p>';
+    　　var infowin3 = new google.maps.InfoWindow({ content:"東大寺、楽しかった！" + contentStr3});
+      google.maps.event.addListener(marker[3], 'mouseover', function(){
+          infowin3.open(map, marker[3]);
+        });
+      google.maps.event.addListener(marker[3], 'mouseout', function(){
+          infowin3.close();
+        });
+
+       marker[4] = new google.maps.Marker(markerOpts[4]);
+      var contentStr4 = '<p><a href="index.html"><img src="nigatsudou.jpg" width="128" height="96" /></a></p>';
+    　　var infowin4 = new google.maps.InfoWindow({content:"絶景！" + contentStr4});
+      google.maps.event.addListener(marker[4], 'mouseover', function(){
+          infowin4.open(map, marker[4]);
+        });
+      google.maps.event.addListener(marker[4], 'mouseout', function(){
+          infowin4.close();
+        });
+           
+       marker[5]= new google.maps.Marker(markerOpts[5]);
+      var contentStr5 = '<p><a href="index.html"><img src="narakoen.jpg" width="128" height="96" /></a></p>';
+    　　var infowin5 = new google.maps.InfoWindow({content:"鹿がいっぱい！" + contentStr5});
+      google.maps.event.addListener(marker[5], 'mouseover', function(){
+          infowin5.open(map, marker[5]);
+        });
+      google.maps.event.addListener(marker[5], 'mouseout', function(){
+          infowin5.close();
+        });
+    //  alert(markerOpts[0]["position"].lat());
+
+//それぞれの道にズーム
+    var minX = markerOpts[0]["position"].lng();
+    var minY = markerOpts[0]["position"].lat();
+    var maxX = markerOpts[0]["position"].lng();;
+    var maxY = markerOpts[0]["position"].lat();;
+    for(var i=0; i<3; i++){
+      var lt = markerOpts[i]["position"].lat();
+      var lg = markerOpts[i]["position"].lng();
+      if (lg <= minX){ minX = lg; }
+      if (lg > maxX){ maxX = lg; }
+      if (lt <= minY){ minY = lt; }
+      if (lt > maxY){ maxY = lt; }
+    }
+    var sw = new google.maps.LatLng(maxY, minX);
+    var ne = new google.maps.LatLng(minY, maxX);
+   var bounds1 = new google.maps.LatLngBounds(sw, ne);
+
+  //  map.fitBounds(bounds1);
+
+    var minX = markerOpts[1]["position"].lng();
+    var minY = markerOpts[1]["position"].lat();
+    var maxX = markerOpts[1]["position"].lng();;
+    var maxY = markerOpts[1]["position"].lat();;
+    for(var i=1; i<4; i++){
+      var lt = markerOpts[i]["position"].lat();
+      var lg = markerOpts[i]["position"].lng();
+      if (lg <= minX){ minX = lg; }
+      if (lg > maxX){ maxX = lg; }
+      if (lt <= minY){ minY = lt; }
+      if (lt > maxY){ maxY = lt; }
+    }
+    var sw = new google.maps.LatLng(maxY, minX);
+    var ne = new google.maps.LatLng(minY, maxX);
+    var bounds2 = new google.maps.LatLngBounds(sw, ne);
+    //map.fitBounds(bounds2);
+
+    var minX = markerOpts[3]["position"].lng();
+    var minY = markerOpts[3]["position"].lat();
+    var maxX = markerOpts[3]["position"].lng();;
+    var maxY = markerOpts[3]["position"].lat();;
+    for(var i=3; i<6; i++){
+      var lt = markerOpts[i]["position"].lat();
+      var lg = markerOpts[i]["position"].lng();
+      if (lg <= minX){ minX = lg; }
+      if (lg > maxX){ maxX = lg; }
+      if (lt <= minY){ minY = lt; }
+      if (lt > maxY){ maxY = lt; }
+    }
+    var sw = new google.maps.LatLng(maxY, minX);
+    var ne = new google.maps.LatLng(minY, maxX);
+    var bounds3 = new google.maps.LatLngBounds(sw, ne);
+
+    var minX = markerOpts[0]["position"].lng();
+    var minY = markerOpts[0]["position"].lat();
+    var maxX = markerOpts[0]["position"].lng();;
+    var maxY = markerOpts[0]["position"].lat();;
+    for(var i=0; i<6; i++){
+      var lt = markerOpts[i]["position"].lat();
+      var lg = markerOpts[i]["position"].lng();
+      if (lg <= minX){ minX = lg; }
+      if (lg > maxX){ maxX = lg; }
+      if (lt <= minY){ minY = lt; }
+      if (lt > maxY){ maxY = lt; }
+    }
+    var sw = new google.maps.LatLng(maxY, minX);
+    var ne = new google.maps.LatLng(minY, maxX);
+    var bounds4 = new google.maps.LatLngBounds(sw, ne);
+    //map.fitBounds(bounds3);
+
+
+    // 地図のスタイル
+    var grayStyle = [
+        {
+            "stylers": [
+                { "saturation": -100 }
+            ]
+        }
+    ];
+ 
+
+
+    
+    // ルートとアイコン
+    var routeCoordinates = new Array(2);
+    var routePath = new Array(2);
+    
+    routeCoordinates[0] = [
+ new google.maps.LatLng(34.683855,135.843317),
+ new google.maps.LatLng(34.684389,135.837852),
+ new google.maps.LatLng(34.68618,135.839316),
+    ];
+    routeCoordinates[1] = [
+ new google.maps.LatLng(34.684389,135.837852),
+ new google.maps.LatLng(34.68618,135.839316),
+ new google.maps.LatLng(34.689016,135.839873),
+    ];
+    routeCoordinates[2] = [
+ new google.maps.LatLng(34.689016,135.839873),
+ new google.maps.LatLng(34.689281,135.844267),
+ new google.maps.LatLng(34.685425,135.843532),
+    ];
+
+    
+    routePath[0] = new google.maps.Polyline({
+        path: routeCoordinates[0],
+        strokeColor: "#FF0000",
+        strokeOpacity: 0.6,
+        strokeWeight: 3,
+        icons: [{
+            icon: {
+                path: google.maps.SymbolPath.CIRCLE,
+                scale: 8,
+                strokeColor: '#FF0000'
+            },
+            offset: '100%'
+        }]
+    });
+    routePath[0].setMap(map);
+
+    routePath[1] = new google.maps.Polyline({
+        path: routeCoordinates[1],
+        strokeColor: "#008000",
+        strokeOpacity: 0.6,
+        strokeWeight: 3,
+        icons: [{
+            icon: {
+                path: google.maps.SymbolPath.CIRCLE,
+                scale: 8,
+                strokeColor: '#008000'
+            },
+            offset: '100%'
+        }]
+    });
+    routePath[1].setMap(map);
+
+    routePath[2] = new google.maps.Polyline({
+        path: routeCoordinates[2],
+        strokeColor: "#0000FF",
+        strokeOpacity: 0.6,
+        strokeWeight: 3,
+        icons: [{
+            icon: {
+                path: google.maps.SymbolPath.CIRCLE,
+                scale: 8,
+                strokeColor: '#0000FF'
+            },
+            offset: '100%'
+        }]
+    });
+    routePath[2].setMap(map);
+
+
+
+//console.log(icons)
+    
+    // アイコンのアニメーション
+    var timerId, count = 0;
+    function move(){
+        if(timerId){
+            return;
+        }
+        timerId = setInterval(function(){
+            count = (count + 1) % 200;
+            var icons = routePath[0].get('icons');
+            icons[0].offset = (count / 2) + '%';
+            routePath[0].set('icons', icons);
+        }, 20);
+    }
+    move();
+    // アイコンのアニメーション
+    var timerId2, count2 = 0;
+    function move2(){
+        if(timerId2){
+            return;
+        }
+        timerId2 = setInterval(function(){
+            count2 = (count2 + 1) % 200;
+            var icons2 = routePath[1].get('icons');
+            icons2[0].offset = (count2 / 2) + '%';
+            routePath[1].set('icons', icons2);
+        }, 20);
+    }
+    move2();
+
+    var timerId3, count3 = 0;
+    function move3(){
+        if(timerId3){
+            return;
+        }
+        timerId3 = setInterval(function(){
+            count3 = (count3 + 1) % 200;
+            var icons3 = routePath[2].get('icons');
+            icons3[0].offset = (count3 / 2) + '%';
+            routePath[2].set('icons', icons3);
+        }, 20);
+    }
+    move3();
+   
+
+
+})();
+
+
+</script>
+
+    <script src="https://code.jquery.com/jquery.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+  </body>
+</html>
